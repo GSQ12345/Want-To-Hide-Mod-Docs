@@ -1,1 +1,191 @@
-<text> im not too good at html does this work? </text>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation Site</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      height: 100vh;
+    }
+    #left-panel {
+      width: 250px;
+      background-color: #f0f0f0;
+      padding: 20px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+    #left-panel ul {
+      list-style: none;
+      padding: 0;
+    }
+    #left-panel li {
+      margin: 10px 0;
+    }
+    #left-panel li ul {
+      padding-left: 20px;
+    }
+    #left-panel li a {
+      text-decoration: none;
+      color: #333;
+      cursor: pointer;
+    }
+    #left-panel .search-bar {
+      margin-top: 20px;
+    }
+    #content-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      padding: 20px;
+    }
+    #text-content {
+      flex: 1;
+      margin-right: 20px;
+      overflow-y: auto;
+    }
+    #image-content {
+      width: 300px;
+      background-color: #f9f9f9;
+      padding: 20px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+      overflow-y: auto;
+    }
+    .search-bar input {
+      padding: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    img { display: block; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <div id="left-panel">
+    <ul id="categories-list"></ul>
+    <div class="search-bar">
+      <input type="text" placeholder="Search...">
+    </div>
+  </div>
+
+  <div id="content-panel">
+    <div id="text-content">
+      <h2>Welcome to the Documentation</h2>
+      <p>Select a topic from the menu to see content here.</p>
+    </div>
+    <div id="image-content">
+      <h3>Images</h3>
+      <!-- Images related to the selected topic will appear here -->
+    </div>
+  </div>
+
+  <script>
+    // Data arrays for categories and subcategories
+    let categories = ["Getting Started", "GUI", "Modifying Values"];
+    let subcategories = {
+      "Getting Started": ["Setup", "Basic Menu Button", "Modifying the Player"],
+      "GUI": ["Setup", "Settings", "Elements"],
+      "Modifying Values": ["Node Paths", "Propertys"]
+    };
+
+    // Content mapping for each subcategory
+    // Each entry is an array of lines. Lines can include an image URL in [ ]
+    let content = {
+      "Setup": [
+        "Placeholder trust me",
+        "Here is a basic setup screenshot: [https://via.placeholder.com/250]"
+      ],
+      "Basic Menu Button": [
+        "Placeholder.",
+        "Example button in action: [https://via.placeholder.com/250]"
+      ],
+      "Modifying the Player": [
+        "Placeholder.",
+        "Player sprite preview: [https://via.placeholder.com/250]"
+      ],
+      "Settings": [
+        "Placeholder.",
+        "Settings example: [https://via.placeholder.com/250]"
+      ],
+      "Elements": [
+        "UI elements include Labels, Buttons, etc. nah those are the only ones chatgpt. oh wait nvm sorry",
+        "Element showcase: [https://via.placeholder.com/250]"
+      ],
+      "Node Paths": [
+        "Placeholder.",
+        "Node Path example: [https://via.placeholder.com/250]"
+      ],
+      "Propertys": [
+        "Use get/set to modify properties. no?",
+        "Property inspector: [https://via.placeholder.com/250]"
+      ]
+    };
+
+    // Function to update the left panel menu based on the categories
+    function updateMenu() {
+      let categoriesList = document.getElementById('categories-list');
+      categoriesList.innerHTML = ''; // Clear the current list
+
+      categories.forEach(category => {
+        let categoryItem = document.createElement('li');
+        let categoryLink = document.createElement('a');
+        categoryLink.textContent = category;
+        categoryItem.appendChild(categoryLink);
+
+        if (subcategories[category] && subcategories[category].length) {
+          let subcategoryList = document.createElement('ul');
+          subcategories[category].forEach(subcat => {
+            let subcategoryItem = document.createElement('li');
+            let subcategoryLink = document.createElement('a');
+            subcategoryLink.textContent = subcat;
+            subcategoryLink.addEventListener('click', e => {
+              e.preventDefault();
+              displayContent(category, subcat);
+            });
+            subcategoryItem.appendChild(subcategoryLink);
+            subcategoryList.appendChild(subcategoryItem);
+          });
+          categoryItem.appendChild(subcategoryList);
+        }
+
+        categoriesList.appendChild(categoryItem);
+      });
+    }
+
+    // Display content and images for a given subcategory
+    function displayContent(category, subcat) {
+      let textSection = document.getElementById('text-content');
+      let imgSection = document.getElementById('image-content');
+      // Header
+      textSection.innerHTML = `<h2>${category}: ${subcat}</h2>`;
+      imgSection.innerHTML = '<h3>Images</h3>';
+
+      let lines = content[subcat] || [];
+      lines.forEach(line => {
+        // Detect [URL]
+        let match = line.match(/\[(https?:\/\/[^\]]+)\]/);
+        // Remove the [URL] from the text
+        let text = line.replace(/\s*\[.*?\]\s*/, '');
+        let p = document.createElement('p');
+        p.textContent = text;
+        textSection.appendChild(p);
+
+        if (match) {
+          let img = document.createElement('img');
+          img.src = match[1];
+          img.style.width = '100%';
+          imgSection.appendChild(img);
+        }
+      });
+    }
+
+    // Initialize menu on load
+    window.onload = function() {
+      updateMenu();
+    };
+  </script>
+
+</body>
+</html>
